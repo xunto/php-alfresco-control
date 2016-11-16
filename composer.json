@@ -1,0 +1,28 @@
+{
+  "name": "xunto/alfresco-control",
+  "version": "0.0.1",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "xunto",
+      "email": "hunterdelyx1@gmail.com"
+    },
+    {
+      "name": "dzolotov",
+      "email": "dzolotov@herzen.spb.ru"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.0",
+    "guzzlehttp/guzzle": "^6.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.4.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "AlfrescoControl\\": "src/"
+    }
+  }
+}

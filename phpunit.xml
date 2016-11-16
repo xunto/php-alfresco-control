@@ -1,0 +1,13 @@
+<phpunit backupGlobals="false"
+         bootstrap="./vendor/autoload.php"
+         strict="true"
+         verbose="true">
+    <testsuite name="PHPUnit Skeleton Generator">
+        <directory suffix="Test.php">./tests</directory>
+    </testsuite>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
+</phpunit>
