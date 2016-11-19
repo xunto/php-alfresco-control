@@ -1,7 +1,7 @@
 Alfresco-Control
 =============
 
-[![Coverage Status](https://coveralls.io/repos/github/xunto/alfresco-control/badge.svg?branch=travis_configuration)](https://coveralls.io/github/xunto/alfresco-control?branch=travis_configuration)
+[![Coverage Status](https://coveralls.io/repos/github/xunto/alfresco-control/badge.svg?branch=master)](https://coveralls.io/github/xunto/alfresco-control?branch=master)
 
 ##Description
 Simple alfresco api wrapper created for personal use. Only process creating and fetching
