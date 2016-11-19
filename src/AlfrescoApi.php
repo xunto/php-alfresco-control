@@ -7,16 +7,23 @@ class AlfrescoApi
 {
     private $client;
 
-    public function __construct($host, $login, $password, $https = true)
+    public function __construct($host, $login, $password, $options = [])
     {
+        $https = @$options['https'];
+        if (!$https) $https = true;
+
         $base_uri = sprintf('%s://%s/alfresco/api/-default-/public/', ($https ? "https" : "http"), $host);
 
-        $this->client = new Client([
+        $config = [
             'base_uri' => $base_uri,
             'auth' => [$login, $password],
-            'debug' => true,
             'http_errors' => false
-        ]);
+        ];
+
+        $handler = @$options['handler'];
+        if ($handler !== null) $config['handler'] = $handler;
+
+        $this->client = new Client($config);
     }
 
     public function request($uri, $data = [], $method = 'GET')
