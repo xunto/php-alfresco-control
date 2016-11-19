@@ -15,3 +15,15 @@ are currently supported. I do not guarantee further development but I accept pul
 ```
 composer require xunto/alfresco-control
 ```
+
+##Usage
+```
+$alfresco = new AlfrescoControl('%host%', '%login%', '%password');
+$processManager = $alfresco->getProcessManager();
+        
+$process = $processManager->createProcess('process_definition_key', '%variables:array%', '%items:array%');
+$id = $process->getId();
+        
+$process = $processManager->findProcess($id);
+$process->getId();
+```
