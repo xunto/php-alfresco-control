@@ -11,12 +11,8 @@ before_script:
   - composer install --prefer-source --no-interaction --dev
 
 script:
-  - >
-    echo;
-    echo "Running unit tests";
-    mkdir -p build/logs;
-    if [[ $TRAVIS_PHP_VERSION == '5.6' ]]; then PHPUNIT_FLAGS="--coverage-clover build/logs/clover.xml"; else PHPUNIT_FLAGS=""; fi ;
-    php vendor/bin/phpunit --colors $PHPUNIT_FLAGS ;
+  - mkdir -p build/logs
+  - phpunit --coverage-clover build/logs/clover.xml
 
 after_script:
   - php vendor/bin/coveralls -v
