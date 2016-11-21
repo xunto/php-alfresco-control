@@ -3,27 +3,27 @@ namespace AlfrescoControl;
 
 use GuzzleHttp\Client;
 
-class AlfrescoApi
+class GuzzleAlfrescoApi implements AlfrescoApiInterface
 {
     private $client;
 
-    public function __construct($host, $login, $password, $options = [])
+    public function __construct($config = [])
     {
-        $https = @$options['https'];
-        if (!$https) $https = true;
+        $https = (@$config['https'] === true) ? true : false;
+
+        $host = @$config['host'];
+        $login = @$config['login'];
+        $password = @$config['password'];
+        $handler = @$config['handler'];
 
         $base_uri = sprintf('%s://%s/alfresco/api/-default-/public/', ($https ? "https" : "http"), $host);
 
-        $config = [
+        $this->client = new Client([
             'base_uri' => $base_uri,
             'auth' => [$login, $password],
+            'handler' => $handler,
             'http_errors' => false
-        ];
-
-        $handler = @$options['handler'];
-        if ($handler !== null) $config['handler'] = $handler;
-
-        $this->client = new Client($config);
+        ]);
     }
 
     public function request($uri, $data = [], $method = 'GET')

@@ -1,13 +1,12 @@
 <?php
 namespace AlfrescoControl\Tests;
 
-use AlfrescoControl\AlfrescoApi;
+use AlfrescoControl\AlfrescoApiInterface;
 use AlfrescoControl\Workflow\WorkflowManager;
 use PHPUnit\Framework\TestCase;
 
 class AlfrescoWorkflowTest extends TestCase
 {
-    private $id;
     private $process_variables;
     private $process_info;
 
@@ -54,7 +53,7 @@ class AlfrescoWorkflowTest extends TestCase
     {
         $this->expectOutputString('');
 
-        $api = $this->createMock(AlfrescoApi::class);
+        $api = $this->createMock(AlfrescoApiInterface::class);
         $api->method('request')
             ->willReturnOnConsecutiveCalls(
                 $this->process_info,

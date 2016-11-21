@@ -1,14 +1,14 @@
 <?php
 namespace AlfrescoControl\Tests;
 
-use AlfrescoControl\AlfrescoApi;
 use AlfrescoControl\AlfrescoException;
+use AlfrescoControl\GuzzleAlfrescoApi;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
-class AlfrescoApiTest extends TestCase
+class GuzzleAlfrescoApiTest extends TestCase
 {
     private function buildErrorResponse($code)
     {
@@ -35,7 +35,10 @@ class AlfrescoApiTest extends TestCase
 
         $handler = new MockHandler($responses);
 
-        $api = new AlfrescoApi('test', 'test', 'test', [
+        $api = new GuzzleAlfrescoApi([
+            'host' => 'test.com',
+            'login' => 'test',
+            'password' => 'test',
             'handler' => $handler
         ]);
 
