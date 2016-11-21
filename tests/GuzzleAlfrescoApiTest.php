@@ -68,5 +68,13 @@ class GuzzleAlfrescoApiTest extends TestCase
         $api->request('process_info', [
             'id' => 'test'
         ]);
+
+        $id = '%id%';
+        $data = [
+            'id' => $id
+        ];
+        $uri = $api->resolve('process_info', $data);
+        $this->assertTrue(substr_count($id, $uri) > 1);
+        $this->assertTrue(empty($data['id']));
     }
 }
