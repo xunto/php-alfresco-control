@@ -15,7 +15,6 @@ class Alfresco
     public function __construct(AlfrescoApiInterface $api)
     {
         $this->api = $api;
-        $this->workflowManager = new WorkflowManager($this->api);
     }
 
     public static function create($adapter, $config = [])
@@ -37,6 +36,9 @@ class Alfresco
      */
     public function getWorkflowManager()
     {
+        if ($this->workflowManager === null)
+            $this->workflowManager = new WorkflowManager($this->api);
+
         return $this->workflowManager;
     }
 }

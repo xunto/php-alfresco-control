@@ -31,8 +31,7 @@ class WorkflowManager
         $data['variables'] = $variables;
         $data['items'] = $items;
 
-        $result = $this->api->request('workflow/versions/1/processes', $data, 'POST');
-
+        $result = $this->api->request('process_create', $data);
         return $this->buildProcessObject($result['entry']);
     }
 
@@ -48,10 +47,12 @@ class WorkflowManager
         $process->setCompleted($data['completed']);
 
         $process->setVariablesReference(function () use ($id) {
-            $data = $this->api->request('workflow/versions/1/processes/' . $id . '/variables');
+            $result = $this->api->request('process_variables', [
+                'id' => $id
+            ]);
 
             $object = [];
-            foreach ($data['list']['entries'] as $entry) {
+            foreach ($result['list']['entries'] as $entry) {
                 $name = $entry['entry']['name'];
                 @$value = $entry['entry']['value'];
 
@@ -77,7 +78,9 @@ class WorkflowManager
      **/
     public function findProcess($id)
     {
-        $result = $this->api->request('workflow/versions/1/processes/' . $id);
+        $result = $this->api->request('process_info', [
+            'id' => $id
+        ]);
         return $this->buildProcessObject($result['entry']);
     }
 }
