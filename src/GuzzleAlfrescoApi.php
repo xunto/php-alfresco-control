@@ -11,25 +11,25 @@ class GuzzleAlfrescoApi implements AlfrescoApiInterface
     private $version;
     private $schema;
 
-    private $routes = [
+    public static $routes = [
         'server_version' => [
             'uri' => 'service/api/server/',
             'method' => 'GET'
         ],
         'process_create' => [
-            'uri' => 'api/{api_id}/public/workflow/versions/1/processes',
+            'uri' => 'api/-default-/public/workflow/versions/1/processes',
             'method' => 'POST'
         ],
         'process_info' => [
-            'uri' => 'api/{api_id}/public/workflow/versions/1/processes/{id}',
+            'uri' => 'api/-default-/public/workflow/versions/1/processes/{id}',
             'method' => 'POST'
         ],
         'process_variables' => [
-            'uri' => 'api/{api_id}/public/workflow/versions/1/processes/{id}/variables',
+            'uri' => 'api/-default-/public/workflow/versions/1/processes/{id}/variables',
             'method' => 'POST'
         ],
         'process_tasks' => [
-            'uri' => 'api/{api_id}/public/workflow/versions/1/processes/{id}/tasks',
+            'uri' => 'api/-default-/public/workflow/versions/1/processes/{id}/tasks',
             'method' => 'POST'
         ]
     ];
@@ -58,29 +58,40 @@ class GuzzleAlfrescoApi implements AlfrescoApiInterface
         $this->schema = @$result['data']['schema'];
     }
 
-    public function request($action, $data = [])
+    public function resolve($route, &$data)
     {
-        $route_definition = @$this->routes[$action];
+        $definition = @self::$routes[$route];
 
-        if (empty($route_definition)) throw new \InvalidArgumentException("No action $action");
+        if (empty($definition)) throw new \InvalidArgumentException("No route: $route");
 
-        $uri = $route_definition['uri'];
-        $method = $route_definition['method'];
+        $parts = preg_split("/[{}]/", $definition['uri']);
 
-//      Find and set url arguments
-        $uri = str_replace('{api_id}', '-default-', $uri);
+        $definition['uri'] = "";
+        $switch = false;
+        foreach ($parts as $part) {
+            if ($switch) {
+                $offset = $part;
 
-        $uri_arguments = [];
-        preg_match_all('/\{(.*?)\}/', $uri, $uri_arguments);
-        $uri_arguments = $uri_arguments[1];
+                if (empty($data[$offset])) {
+                    throw new \InvalidArgumentException("$offset is no defined");
+                }
 
-        foreach ($uri_arguments as $argument) {
-            $uri = str_replace(sprintf('{%s}', $argument), $data[$argument], $uri);
-            unset($data[$argument]);
+                $part = $data[$offset];
+                unset($data[$offset]);
+            }
+
+            $definition['uri'] .= $part;
+            $switch = !$switch;
         }
 
-//      Send request
-        $response = $this->client->request($method, $uri, [
+        return $definition;
+    }
+
+    public function request($action, $data = [])
+    {
+        $route = $this->resolve($action, $data);
+
+        $response = $this->client->request($route['method'], $route['uri'], [
             'json' => $data
         ]);
 

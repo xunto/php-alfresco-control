@@ -2,6 +2,7 @@
 namespace AlfrescoControl\Tests;
 
 use AlfrescoControl\AlfrescoException;
+use Exception;
 use AlfrescoControl\GuzzleAlfrescoApi;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7;
@@ -10,32 +11,6 @@ use PHPUnit\Framework\TestCase;
 
 class GuzzleAlfrescoApiTest extends TestCase
 {
-    public static function mockResponse($code, $data) {
-        return new Response($code, [], Psr7\stream_for(json_encode($data)));
-    }
-
-    public static function mockServerVersionResponse()
-    {
-        return self::mockResponse(200, [
-            'data' => [
-                'edition' => '%edition%',
-                'version' => '%version%',
-                'schema' => '%schema%'
-            ]
-        ]);
-    }
-
-    public static function mockErrorResponse($code)
-    {
-        return self::mockResponse($code, [
-            'error' => [
-                "statusCode" => $code,
-                'stackTrace' => '%stack trace%',
-                "briefSummary" => "Error message",
-            ]
-        ]);
-    }
-
     public function test()
     {
         $this->expectOutputString('');
@@ -59,14 +34,65 @@ class GuzzleAlfrescoApiTest extends TestCase
         ]);
         $this->assertEquals($result['data'], 'test');
 
-        $this->expectException(AlfrescoException::class);
-        $api->request('process_info', [
-            'id' => 'test'
-        ]);
+        try {
+            $api->request('process_info', [
+                'id' => 'test'
+            ]);
+            $this->fail('No exception');
+        } catch (Exception $exception) {
+            $this->assertTrue($exception instanceof AlfrescoException);
+        }
 
-        $this->expectException(AlfrescoException::class);
-        $api->request('process_info', [
-            'id' => 'test'
+        try {
+            $api->request('process_info', [
+                'id' => 'test'
+            ]);
+            $this->fail('No exception');
+        } catch (Exception $exception) {
+            $this->assertTrue($exception instanceof AlfrescoException);
+        }
+
+        $id = '%id%';
+        $data = [
+            'id' => $id
+        ];
+        $route = $api->resolve('process_info', $data);
+        $this->assertEquals($route['uri'], str_replace('{id}', $id, GuzzleAlfrescoApi::$routes['process_info']['uri']));
+        $this->assertTrue(empty($data['id']));
+
+        try {
+            $data = [];
+            $api->resolve('process_info', $data);
+            $this->fail('No exception');
+        } catch (Exception $exception) {
+            $this->assertTrue($exception instanceof \InvalidArgumentException);
+        }
+    }
+
+    public static function mockServerVersionResponse()
+    {
+        return self::mockResponse(200, [
+            'data' => [
+                'edition' => '%edition%',
+                'version' => '%version%',
+                'schema' => '%schema%'
+            ]
+        ]);
+    }
+
+    public static function mockResponse($code, $data)
+    {
+        return new Response($code, [], Psr7\stream_for(json_encode($data)));
+    }
+
+    public static function mockErrorResponse($code)
+    {
+        return self::mockResponse($code, [
+            'error' => [
+                "statusCode" => $code,
+                'stackTrace' => '%stack trace%',
+                "briefSummary" => "Error message",
+            ]
         ]);
     }
 }
