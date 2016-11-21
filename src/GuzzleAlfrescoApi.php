@@ -11,7 +11,7 @@ class GuzzleAlfrescoApi implements AlfrescoApiInterface
     private $version;
     private $schema;
 
-    private $routes = [
+    public static $routes = [
         'server_version' => [
             'uri' => 'service/api/server/',
             'method' => 'GET'
@@ -60,7 +60,7 @@ class GuzzleAlfrescoApi implements AlfrescoApiInterface
 
     public function resolve($route, &$data)
     {
-        $definition = @$this->routes[$route];
+        $definition = @self::$routes[$route];
 
         if (empty($definition)) throw new \InvalidArgumentException("No route: $route");
 
