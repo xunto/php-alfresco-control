@@ -18,7 +18,11 @@ composer require xunto/alfresco-control
 
 ##Usage
 ```
-$alfresco = new AlfrescoControl('%host%', '%login%', '%password');
+$alfresco = Alfresco::create('guzzle', [
+                        'host' => '%host%',
+                        'login' => '%login%',
+                        'password' => '%password%'
+                    ]);
 $processManager = $alfresco->getProcessManager();
         
 $process = $processManager->createProcess('process_definition_key', '%variables:array%', '%items:array%');

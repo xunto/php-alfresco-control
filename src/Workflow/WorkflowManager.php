@@ -1,13 +1,13 @@
 <?php
 namespace AlfrescoControl\Workflow;
 
-use AlfrescoControl\AlfrescoApi;
+use AlfrescoControl\AlfrescoApiInterface;
 
 class WorkflowManager
 {
     private $api;
 
-    public function __construct(AlfrescoApi $api)
+    public function __construct(AlfrescoApiInterface $api)
     {
         $this->api = $api;
     }
