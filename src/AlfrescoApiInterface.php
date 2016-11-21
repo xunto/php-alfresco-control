@@ -3,5 +3,5 @@ namespace AlfrescoControl;
 
 interface AlfrescoApiInterface
 {
-    public function request($uri, $data = [], $method = 'GET');
+    public function request($action, $data = []);
 }

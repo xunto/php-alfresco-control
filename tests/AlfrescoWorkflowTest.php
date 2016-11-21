@@ -16,14 +16,14 @@ class AlfrescoWorkflowTest extends TestCase
 
         $this->process_info = [
             "entry" => [
-                "processDefinitionId" => "test:26:48404",
-                "startUserId" => "test",
-                "startActivityId" => "startevent1",
-                "businessKey" => "test582cd8e05d243",
-                "startedAt" => new \DateTime('now'),
-                "id" => "123123",
+                "processDefinitionId" => "%processDefinitionId%",
+                "startUserId" => "%startUserId%",
+                "startActivityId" => '%startActivityId%',
+                "businessKey" => '%businessKey%',
+                "startedAt" => '%date%',
+                "id" => "%id%",
                 "completed" => false,
-                "processDefinitionKey" => "test"
+                "processDefinitionKey" => "%processDefinitionKey%"
             ]
         ];
 
@@ -51,8 +51,6 @@ class AlfrescoWorkflowTest extends TestCase
 
     public function test()
     {
-        $this->expectOutputString('');
-
         $api = $this->createMock(AlfrescoApiInterface::class);
         $api->method('request')
             ->willReturnOnConsecutiveCalls(
@@ -70,7 +68,7 @@ class AlfrescoWorkflowTest extends TestCase
         $this->assertEquals($process->getBusinessKey(), $this->process_info['entry']['businessKey']);
         $this->assertEquals($process->getCompleted(), $this->process_info['entry']['completed']);
 
-        // Find
+        // Search
         $process = $manager->findProcess($process->getId());
         $this->assertEquals($process->getId(), $this->process_info['entry']['id']);
         $this->assertEquals($process->getProcessDefinitionKey(), $this->process_info['entry']['processDefinitionKey']);

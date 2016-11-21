@@ -10,28 +10,40 @@ use PHPUnit\Framework\TestCase;
 
 class GuzzleAlfrescoApiTest extends TestCase
 {
-    private function buildErrorResponse($code)
+    public static function mockResponse($code, $data) {
+        return new Response($code, [], Psr7\stream_for(json_encode($data)));
+    }
+
+    public static function mockServerVersionResponse()
     {
-        return new Response($code, [], Psr7\stream_for(json_encode([
+        return self::mockResponse(200, [
+            'data' => [
+                'edition' => '%edition%',
+                'version' => '%version%',
+                'schema' => '%schema%'
+            ]
+        ]);
+    }
+
+    public static function mockErrorResponse($code)
+    {
+        return self::mockResponse($code, [
             'error' => [
                 "statusCode" => $code,
                 'stackTrace' => '%stack trace%',
                 "briefSummary" => "Error message",
             ]
-        ])));
+        ]);
     }
 
     public function test()
     {
+        $this->expectOutputString('');
         $responses = [];
-
-        $body = Psr7\stream_for(json_encode([
-            'data' => 'test'
-        ]));
-        $responses[] = new Response(200, [], $body);
-
-        $responses[] = $this->buildErrorResponse(404);
-        $responses[] = $this->buildErrorResponse(500);
+        $responses[] = self::mockServerVersionResponse();
+        $responses[] = self::mockResponse(200, ['data' => 'test']);
+        $responses[] = self::mockErrorResponse(404);
+        $responses[] = self::mockErrorResponse(500);
 
         $handler = new MockHandler($responses);
 
@@ -42,14 +54,19 @@ class GuzzleAlfrescoApiTest extends TestCase
             'handler' => $handler
         ]);
 
-        $result = $api->request('/test1/');
+        $result = $api->request('process_info', [
+            'id' => 'test'
+        ]);
         $this->assertEquals($result['data'], 'test');
 
         $this->expectException(AlfrescoException::class);
-        $api->request('/404/');
+        $api->request('process_info', [
+            'id' => 'test'
+        ]);
 
         $this->expectException(AlfrescoException::class);
-        $api->request('/500/');
-
+        $api->request('process_info', [
+            'id' => 'test'
+        ]);
     }
 }
