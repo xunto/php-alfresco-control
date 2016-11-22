@@ -22,15 +22,15 @@ class GuzzleAlfrescoApi implements AlfrescoApiInterface
         ],
         'process_info' => [
             'uri' => 'api/-default-/public/workflow/versions/1/processes/{id}',
-            'method' => 'POST'
+            'method' => 'GET'
         ],
         'process_variables' => [
             'uri' => 'api/-default-/public/workflow/versions/1/processes/{id}/variables',
-            'method' => 'POST'
+            'method' => 'GET'
         ],
         'process_tasks' => [
             'uri' => 'api/-default-/public/workflow/versions/1/processes/{id}/tasks',
-            'method' => 'POST'
+            'method' => 'GET'
         ]
     ];
 
