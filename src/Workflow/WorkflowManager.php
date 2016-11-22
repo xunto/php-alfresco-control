@@ -15,7 +15,6 @@ class WorkflowManager
     /**
      * Create new alfresco process
      * @var $process_definition_key - process key (alfresco)
-     * @var $business_key - unique key for process
      * @var $variables - additional variables (hash map)
      * @var $items - references to alfresco documents
      * @return Process process object
