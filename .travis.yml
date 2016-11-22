@@ -5,14 +5,18 @@ php:
   - 7.0
   - 7.1
   - hhvm
-
+  
+matrix:
+  allow_failures:
+    - php: hhvm
+    
 before_script:
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
 
 script:
   - mkdir -p build/logs
-  - phpunit --coverage-clover build/logs/clover.xml
+  - php vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
 after_script:
   - php vendor/bin/coveralls -v
