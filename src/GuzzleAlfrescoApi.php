@@ -13,7 +13,7 @@ class GuzzleAlfrescoApi implements AlfrescoApiInterface
 
     public static $routes = [
         'server_version' => [
-            'uri' => 'service/api/server/',
+            'uri' => 'service/api/server',
             'method' => 'GET'
         ],
         'process_create' => [
