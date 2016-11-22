@@ -13,7 +13,6 @@ class GuzzleAlfrescoApiTest extends TestCase
 {
     public function test()
     {
-        $this->expectOutputString('');
         $responses = [];
         $responses[] = self::mockServerVersionResponse();
         $responses[] = self::mockResponse(200, ['data' => 'test']);
