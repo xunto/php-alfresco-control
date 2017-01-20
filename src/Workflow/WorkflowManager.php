@@ -49,6 +49,8 @@ class WorkflowManager
             'id' => $id
         ]);
 
+        $data = $data['entry'];
+
         $process->setId($id);
         $process->setProcessDefinitionKey($data['processDefinitionKey']);
         $process->setBusinessKey($data['businessKey']);
