@@ -54,9 +54,11 @@ class AlfrescoWorkflowTest extends TestCase
         $api = $this->createMock(AlfrescoApiInterface::class);
         $api->method('request')
             ->willReturnOnConsecutiveCalls(
-                $this->process_info,
-                $this->process_info,
-                $this->process_variables
+                $this->process_info, // On create process
+                $this->process_info, // On find process after creating
+                $this->process_variables, // On find process after creating
+                $this->process_info, // On find process
+                $this->process_variables // On find process
             );
 
         $manager = new WorkflowManager($api);

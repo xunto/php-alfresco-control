@@ -60,13 +60,13 @@ class WorkflowManager
         $data = $this->api->request('process_variables', [
             'id' => $id
         ]);
+        $data = $data['list']['entries'];
 
         $variables = [];
-        foreach ($data['list']['entries'] as $entry) {
+        foreach ($data as $entry) {
             $name = $entry['entry']['name'];
             @$value = $entry['entry']['value'];
-
-            $object[$name] = $value;
+            $variables[$name] = $value;
         }
 
         $process->setVariables($variables);
