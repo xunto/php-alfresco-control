@@ -31,43 +31,8 @@ class WorkflowManager
         $data['items'] = $items;
 
         $result = $this->api->request('process_create', $data);
-        return $this->buildProcessObject($result['entry']);
-    }
 
-    private function buildProcessObject($data)
-    {
-        $process = new Process();
-
-        $id = $data['id'];
-
-        $process->setId($id);
-        $process->setProcessDefinitionKey($data['processDefinitionKey']);
-        $process->setBusinessKey($data['businessKey']);
-        $process->setCompleted($data['completed']);
-
-        $process->setVariablesReference(function () use ($id) {
-            $result = $this->api->request('process_variables', [
-                'id' => $id
-            ]);
-
-            $object = [];
-            foreach ($result['list']['entries'] as $entry) {
-                $name = $entry['entry']['name'];
-                @$value = $entry['entry']['value'];
-
-                $object[$name] = $value;
-            }
-
-            return $object;
-        });
-
-        $process->setTasksReference(function () use ($id) {
-            //TODO: implement
-//            $data = $this->api->request('/workflow/versions/1/processes/'. $process->getId() .'/tasks');
-            return [];
-        });
-
-        return $process;
+        return $this->findProcess($result['entry']['id']);
     }
 
     /**
@@ -77,9 +42,38 @@ class WorkflowManager
      **/
     public function findProcess($id)
     {
-        $result = $this->api->request('process_info', [
+        $process = new Process();
+
+        // Fetch basic process info
+        $data = $this->api->request('process_info', [
             'id' => $id
         ]);
-        return $this->buildProcessObject($result['entry']);
+
+        $data = $data['entry'];
+
+        $process->setId($id);
+        $process->setProcessDefinitionKey($data['processDefinitionKey']);
+        $process->setBusinessKey($data['businessKey']);
+        $process->setCompleted($data['completed']);
+
+        // Fetch process variables
+        $data = $this->api->request('process_variables', [
+            'id' => $id
+        ]);
+        $data = $data['list']['entries'];
+
+        $variables = [];
+        foreach ($data as $entry) {
+            $name = $entry['entry']['name'];
+            @$value = $entry['entry']['value'];
+            $variables[$name] = $value;
+        }
+
+        $process->setVariables($variables);
+
+        // Fetch tasks
+        $process->setTasks([]);
+
+        return $process;
     }
 }
