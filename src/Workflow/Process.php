@@ -11,8 +11,6 @@ class Process
     private $completed;
     private $variables;
     private $tasks;
-    private $variablesReference;
-    private $tasksReference;
 
     /**
      * @return string
@@ -80,32 +78,22 @@ class Process
 
     public function getVariables()
     {
-        if (!isset($this->variables)) {
-            $reference = $this->variablesReference;
-            $this->variables = $reference();
-        }
-
         return $this->variables;
+    }
+
+    public function setVariables($variables)
+    {
+        $this->variables = $variables;
     }
 
     public function getTasks()
     {
-        if (!isset($this->tasks)) {
-            $reference = $this->tasksReference;
-            $this->tasks = $reference();
-        }
-
         return $this->tasks;
     }
 
-    public function setVariablesReference(Closure $variablesReference)
+    public function setTasks($tasks)
     {
-        $this->variablesReference = $variablesReference;
-    }
-
-    public function setTasksReference(Closure $tasksReference)
-    {
-        $this->tasksReference = $tasksReference;
+        $this->tasks = $tasks;
     }
 
 }
